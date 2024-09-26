@@ -10,13 +10,13 @@
   @namespace m5
   @brief Toplevel namespace of M5
  */
-namespace m5 { namespace hal { namespace gpio {
-class GPIO {
-};
+namespace m5 {
+namespace hal {
+namespace gpio {
+class GPIO {};
 
-
-};
-}
-}
+};  // namespace gpio
+}  // namespace hal
+}  // namespace m5
 
 #endif

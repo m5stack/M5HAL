@@ -38,29 +38,28 @@ gpio_number_t の下位 5bit がピン番号、上位 10bit がポート番号�
 */
 
 enum class GpioMode : uint8_t {
-  Input = 0,
-  Output,
-  Output_OpenDrain,
+    Input = 0,
+    Output,
+    Output_OpenDrain,
 };
 using gpio_mode_t = GpioMode;
 
-
 enum class BusType : uint8_t {
-  UNKNOWN = 0,
-  I2C,
-  SPI,
-  I2S,
-  UART,
+    UNKNOWN = 0,
+    I2C,
+    SPI,
+    I2S,
+    UART,
 
-  PWM,
-  GPIO,
-  ADC,
-  DAC,
+    PWM,
+    GPIO,
+    ADC,
+    DAC,
 };
 using bus_type_t = BusType;
 
-} // namespace types
-} // namespace hal
-} // namespace m5
+}  // namespace types
+}  // namespace hal
+}  // namespace m5
 
 #endif
