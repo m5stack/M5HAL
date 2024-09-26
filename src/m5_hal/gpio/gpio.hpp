@@ -6,15 +6,11 @@
 #include <stdint.h>
 #include <stddef.h>
 
-/*!
-  @namespace m5
-  @brief Toplevel namespace of M5
- */
 namespace m5 {
 namespace hal {
 namespace gpio {
-class GPIO {};
-
+class GPIO { /* Empty*/
+};
 };  // namespace gpio
 }  // namespace hal
 }  // namespace m5

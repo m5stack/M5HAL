@@ -93,8 +93,11 @@ struct BusAccessor {
     BusAccessor(TBus& bus, TBusAccessInterface& access) : _bus(bus), _access(access), _extension(access)
     {
     }
-    BusAccessor(const BusAccessor&)            = delete;
+
+    BusAccessor(const BusAccessor&) = delete;
+
     BusAccessor& operator=(const BusAccessor&) = delete;
+
     BusAccessor(BusAccessor&& other)
         : _owner(other.owner), _bus(other.bus), _access(other.access), _extension(other.access)
     {
