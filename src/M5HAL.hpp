@@ -12,7 +12,6 @@
 #include "./m5_hal/interface/gpio.hpp"
 
 #define M5HAL_STATIC_MACRO_STRING(x) #x
-// Source
 // clang-format off
 #define M5HAL_STATIC_MACRO_CONCAT(x, y) M5HAL_STATIC_MACRO_STRING(x/y)
 // clang-format on
