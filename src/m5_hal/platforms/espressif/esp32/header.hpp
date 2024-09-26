@@ -17,23 +17,23 @@ namespace esp32 {
 namespace types {
 
 enum class PeripheralType : uint8_t {
-  none = 0,
-  i2c0,
-  i2c1,
-  spi2,
-  spi3,
+    none = 0,
+    i2c0,
+    i2c1,
+    spi2,
+    spi3,
 };
 using periph_t = PeripheralType;
 
-} // namespace types
+}  // namespace types
 
 namespace gpio {
 interface::gpio::GPIO* getGPIO(void);
-} // namespace gpio
+}  // namespace gpio
 
-} // namespace esp32
-} // namespace platforms
-} // namespace hal
-} // namespace m5
+}  // namespace esp32
+}  // namespace platforms
+}  // namespace hal
+}  // namespace m5
 
 #endif

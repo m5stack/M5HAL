@@ -10,17 +10,14 @@ namespace platforms {
 namespace esp32 {
 namespace gpio {
 interface::gpio::GPIO* getGPIO(void);
-} // namespace gpio
-
+}  // namespace gpio
 namespace bus {
-namespace i2c { 
-
-
-} // namespace i2c
-} // namespace bus
-} // namespace esp32
-} // namespace platforms
-} // namespace hal
-} // namespace m5
+namespace i2c {
+}  // namespace i2c
+}  // namespace bus
+}  // namespace esp32
+}  // namespace platforms
+}  // namespace hal
+}  // namespace m5
 
 #endif
