@@ -29,27 +29,29 @@
 #if __has_include(<sdkconfig.h>)
 #include <sdkconfig.h>
 #endif
+// clang-format off
 #if defined(CONFIG_IDF_TARGET)
 #if defined(CONFIG_IDF_TARGET_ESP32C3)
 #define M5HAL_TARGET_PLATFORM_NUMBER M5HAL_PLATFORM_NUMBER_ESP32C3
-#define M5HAL_TARGET_PLATFORM_PATH   m5_hal / platforms / espressif / esp32c3
+#define M5HAL_TARGET_PLATFORM_PATH   m5_hal/platforms/espressif/esp32c3
 #elif defined(CONFIG_IDF_TARGET_ESP32S3)
 #define M5HAL_TARGET_PLATFORM_NUMBER M5HAL_PLATFORM_NUMBER_ESP32S3
-#define M5HAL_TARGET_PLATFORM_PATH   m5_hal / platforms / espressif / esp32s3
+#define M5HAL_TARGET_PLATFORM_PATH   m5_hal/platforms/espressif/esp32s3
 #elif defined(CONFIG_IDF_TARGET_ESP32)
 #define M5HAL_TARGET_PLATFORM_NUMBER M5HAL_PLATFORM_NUMBER_ESP32_1st
-#define M5HAL_TARGET_PLATFORM_PATH   m5_hal / platforms / espressif / esp32
+#define M5HAL_TARGET_PLATFORM_PATH   m5_hal/platforms/espressif/esp32
 
 #elif defined(CONFIG_IDF_TARGET_ESP32C6)
 #define M5HAL_TARGET_PLATFORM_NUMBER M5HAL_PLATFORM_NUMBER_ESP32_C6
-#define M5HAL_TARGET_PLATFORM_PATH   m5_hal / platforms / espressif / esp32c6
+#define M5HAL_TARGET_PLATFORM_PATH   m5_hal/platforms/espressif/esp32c6
 #else
 #define M5HAL_TARGET_PLATFORM_NUMBER M5HAL_PLATFORM_NUMBER_ESP32_UNKNOWN
-#define M5HAL_TARGET_PLATFORM_PATH   m5_hal / platforms / espressif / esp32_unknown
+#define M5HAL_TARGET_PLATFORM_PATH   m5_hal/platforms/espressif/esp32_unknown
 #endif
 #endif
 #else
 #endif
+// clang-format on
 
 #undef XSTR
 #undef STR
