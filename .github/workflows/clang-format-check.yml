@@ -5,6 +5,11 @@ env:
 
 on:
   push:
+    tags-ignore:
+      - '*.*.*'
+      - 'v*.*.*'
+    branches:
+      - '*'
     paths:
       - '**.ino'
       - '**.cpp'
@@ -33,12 +38,15 @@ jobs:
     strategy:
       matrix:
         path:
+          #- check: './'    # path to include
+          #  exclude: ''    # path to exclude
           - check: 'src'
-            exclude: ''
-          - check: 'test'
-            exclude: ''
-          - check: 'examples'
-            exclude: ''
+          #  exclude: ''
+          #- check: 'test'
+          #- check: 'examples'
+          #  exclude: '(Fonts)' # Exclude file paths containing "Fonts"
+          #- check: 'examples'
+          #  exclude: ''
 
     steps:
       - name: Checkout
