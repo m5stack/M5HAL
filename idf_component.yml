@@ -6,7 +6,7 @@ version: "0.0.2"
 
 dependencies:
   idf: ">=5.0"
-  M5Utility:
+  m5stack/M5Utility:
     git: https://github.com/m5stack/M5Utility.git
     version: feature/esp-idf-native-support
 
