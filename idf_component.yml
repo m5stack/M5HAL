@@ -20,10 +20,9 @@ targets:
 files:
   exclude:
     - "docs/**"
-    - "tmp/**"
+    - "examples/**"
+    - "test/**"
     - ".github/**"
-    - ".vscode/**"
-    - ".pio/**"
-    - "platformio.ini"
+    - "boards/**"
     - "library.json"
     - "library.properties"
