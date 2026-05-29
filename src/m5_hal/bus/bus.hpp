@@ -99,7 +99,7 @@ struct BusAccessor {
     BusAccessor& operator=(const BusAccessor&) = delete;
 
     BusAccessor(BusAccessor&& other)
-        : _owner(other.owner), _bus(other.bus), _access(other.access), _extension(other.access)
+        : _owner(other._owner), _bus(other._bus), _access(other._access), _extension(other._access)
     {
         other._owner = false;
     }
