@@ -2,7 +2,7 @@ description: Hardware Abstraction Layer (HAL) for M5Stack products.
 url: https://github.com/m5stack/M5HAL
 issues: https://github.com/m5stack/M5HAL/issues
 license: MIT
-version: "0.0.2"
+version: "0.0.4"
 
 dependencies:
   idf: ">=5.0"
