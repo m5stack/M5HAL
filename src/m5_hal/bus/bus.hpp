@@ -98,8 +98,10 @@ struct BusAccessor {
 
     BusAccessor& operator=(const BusAccessor&) = delete;
 
+    BusAccessor& operator=(BusAccessor&&) = delete;
+
     BusAccessor(BusAccessor&& other)
-        : _owner(other.owner), _bus(other.bus), _access(other.access), _extension(other.access)
+        : _owner(other._owner), _bus(other._bus), _access(other._access), _extension(other._access)
     {
         other._owner = false;
     }
@@ -110,15 +112,7 @@ struct BusAccessor {
         }
         this->_owner = false;
     }
-    BusAccessor& operator=(BusAccessor&& other)
-    {
-        this->release();
-        this->_owner     = other._owner;
-        this->_bus       = other._bus;
-        this->_access    = other._access;
-        this->_extension = TExtension(this->_access);
-        other._owner     = false;
-    }
+
     /*
         void read() { this->_access.read(this->_bus);}
         void write() { this->_access.write(this->_bus); }

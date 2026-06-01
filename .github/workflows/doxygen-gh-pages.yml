@@ -1,5 +1,7 @@
 name: Deploy Doxygen docuemnt on GitHub Pages
-on: [release, workflow_dispatch]
+# NOTE: docs/ (Doxyfile, doxy.sh) が未整備のため release トリガーを一時的に外している。
+#       M5HAL 改修時に docs/ を整備し、ドキュメント生成も合わせて整備する。その際 release を戻す。
+on: [workflow_dispatch]
 # branches:
 #   - main
 #   - master
