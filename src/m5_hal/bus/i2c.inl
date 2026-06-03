@@ -189,6 +189,9 @@ m5::stl::expected<size_t, m5::hal::error::error_t> SoftwareI2CMasterAccessor::wr
     int_fast16_t dc0 = (delay_cycle) >> 2;
     int_fast16_t dc1 = delay_cycle - dc0;
     size_t result    = 0;
+    if (len == 0) {
+        return result;  // guard: do-while は len==0 でも 1 回実行され nullptr deref する
+    }
     do {
         uint_fast8_t mask = 0x80;
         uint_fast8_t d    = *data++;
