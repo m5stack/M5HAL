@@ -37,11 +37,17 @@ using namespace frameworks::arduino;
 
 #elif M5HAL_TARGET_PLATFORM_NUMBER != 0
 
-// Arduino 非搭載 (pure ESP-IDF) かつ platform 既知時は native 実装を利用
+// Arduino 非搭載 (pure ESP-IDF) かつ platform 既知時は native 実装を利用。
+// platforms::esp32 全体を using namespace すると、esp32 (初代) header が持つ
+// 入れ子の platforms::esp32::types が m5::hal::types と衝突するため、必要な
+// gpio 自由関数だけを m5::hal::gpio へ取り込む。
 namespace m5 {
 namespace hal {
-using namespace platforms::esp32;
-}
+namespace gpio {
+using platforms::esp32::gpio::getGPIO;
+using platforms::esp32::gpio::getPin;
+}  // namespace gpio
+}  // namespace hal
 }  // namespace m5
 
 #endif

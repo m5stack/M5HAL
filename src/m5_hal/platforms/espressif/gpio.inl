@@ -22,7 +22,7 @@ interface::gpio::GPIO* getGPIO(void)
     return &s_gpio_instance;
 }
 
-interface::gpio::Pin* getPin(types::gpio_number_t pinNumber)
+interface::gpio::Pin* getPin(m5::hal::types::gpio_number_t pinNumber)
 {
     return getGPIO()->getPin(pinNumber);
 }
@@ -33,7 +33,7 @@ interface::gpio::Port* GPIO::getPort(uint8_t portNumber)
     return &s_port_instance;
 }
 
-interface::gpio::Pin* GPIO::getPin(types::gpio_number_t pinNumber)
+interface::gpio::Pin* GPIO::getPin(m5::hal::types::gpio_number_t pinNumber)
 {
     return getPort(0)->getPin(pinNumber);
 }
@@ -72,17 +72,17 @@ void Pin::writeLow(void)
     gpio_set_level(static_cast<gpio_num_t>(_gpio_number), 0);
 }
 
-void Pin::setMode(types::gpio_mode_t mode)
+void Pin::setMode(m5::hal::types::gpio_mode_t mode)
 {
     const gpio_num_t num = static_cast<gpio_num_t>(_gpio_number);
     switch (mode) {
-        case types::gpio_mode_t::Input:
+        case m5::hal::types::gpio_mode_t::Input:
             gpio_set_direction(num, GPIO_MODE_INPUT);
             break;
-        case types::gpio_mode_t::Output:
+        case m5::hal::types::gpio_mode_t::Output:
             gpio_set_direction(num, GPIO_MODE_OUTPUT);
             break;
-        case types::gpio_mode_t::Output_OpenDrain:
+        case m5::hal::types::gpio_mode_t::Output_OpenDrain:
             // OD でも線を読めるよう INPUT_OUTPUT_OD にする (clock stretch / ACK 検出)
             gpio_set_direction(num, GPIO_MODE_INPUT_OUTPUT_OD);
             break;

@@ -19,19 +19,19 @@ public:
     void writeLow(void) override;
     bool read(void) override;
 
-    void setMode(types::gpio_mode_t mode) override;
-    types::gpio_number_t getGpioNumber(void) const override
+    void setMode(m5::hal::types::gpio_mode_t mode) override;
+    m5::hal::types::gpio_number_t getGpioNumber(void) const override
     {
         return _gpio_number;
     }
 
     Pin(void) = default;
-    Pin(types::gpio_number_t gpio_number) : _gpio_number{gpio_number}
+    Pin(m5::hal::types::gpio_number_t gpio_number) : _gpio_number{gpio_number}
     {
     }
 
 protected:
-    types::gpio_number_t _gpio_number{-1};
+    m5::hal::types::gpio_number_t _gpio_number{-1};
 };
 
 // 複数の Pin を束ねる Port
@@ -44,11 +44,11 @@ public:
 class GPIO : public interface::gpio::GPIO {
 public:
     interface::gpio::Port* getPort(uint8_t portNumber) override;
-    interface::gpio::Pin* getPin(types::gpio_number_t pinNumber) override;
+    interface::gpio::Pin* getPin(m5::hal::types::gpio_number_t pinNumber) override;
 };
 
 interface::gpio::GPIO* getGPIO(void);
-interface::gpio::Pin* getPin(types::gpio_number_t pinNumber);
+interface::gpio::Pin* getPin(m5::hal::types::gpio_number_t pinNumber);
 
 }  // namespace gpio
 }  // namespace esp32
