@@ -2,7 +2,7 @@
 #define M5_HAL_PLATFORMS_ESPRESSIF_ESP32S3_HEADER_HPP
 
 #include "../../../interface/gpio.hpp"
-#include "../../../interface/bus.hpp"
+#include "../gpio.hpp"
 
 namespace m5 {
 namespace hal {
