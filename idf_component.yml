@@ -1,0 +1,29 @@
+description: Hardware Abstraction Layer (HAL) for M5Stack products.
+url: https://github.com/m5stack/M5HAL
+issues: https://github.com/m5stack/M5HAL/issues
+license: MIT
+version: "0.0.4"
+
+dependencies:
+  idf: ">=5.0"
+  m5stack/M5Utility:
+    git: https://github.com/m5stack/M5Utility.git
+    version: feature/esp-idf-native-support
+
+targets:
+  - esp32
+  - esp32s3
+  - esp32c3
+  - esp32c6
+  - esp32p4
+  - esp32h2
+
+files:
+  exclude:
+    - "docs/**"
+    - "examples/**"
+    - "test/**"
+    - ".github/**"
+    - "boards/**"
+    - "library.json"
+    - "library.properties"
