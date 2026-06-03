@@ -28,16 +28,21 @@
 #if M5HAL_FRAMEWORK_HAS_ARDUINO
 #include "./m5_hal/frameworks/arduino/header.hpp"
 
-// 対象プラットフォームが特定されない場合は Arduino経由の実装を利用
-#if 1  // M5HAL_TARGET_PLATFORM_NUMBER == 0
-
+// Arduino 搭載時は Arduino 経由の実装を利用
 namespace m5 {
 namespace hal {
 using namespace frameworks::arduino;
 }
 }  // namespace m5
 
-#endif
+#elif M5HAL_TARGET_PLATFORM_NUMBER != 0
+
+// Arduino 非搭載 (pure ESP-IDF) かつ platform 既知時は native 実装を利用
+namespace m5 {
+namespace hal {
+using namespace platforms::esp32;
+}
+}  // namespace m5
 
 #endif
 
