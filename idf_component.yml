@@ -6,7 +6,9 @@ version: "0.1.0"
 
 dependencies:
   idf: ">=5.0"
-  m5stack/M5Utility: ">=0.1.0"
+  m5stack/M5Utility:
+    git: https://github.com/m5stack/M5Utility.git
+    version: main
 
 targets:
   - esp32
