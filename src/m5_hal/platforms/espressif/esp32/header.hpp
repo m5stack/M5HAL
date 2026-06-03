@@ -3,6 +3,7 @@
 
 #include "../../../interface/gpio.hpp"
 #include "../../../bus/bus.hpp"
+#include "../gpio.hpp"
 
 namespace m5 {
 namespace hal {

@@ -10,12 +10,13 @@
         "type": "git",
         "url": "https://github.com/m5stack/M5HAL.git"
     },
-    "dependencies": [],
-    "version": "0.0.4",
+    "dependencies": {
+        "m5stack/M5Utility": ">=0.1.0"
+    },
+    "version": "0.1.0",
     "frameworks": [
         "arduino",
-        "espidf",
-        "*"
+        "espidf"
     ],
     "platforms": [
         "espressif32"
