@@ -7,8 +7,8 @@
 # driver/gpio.h.
 #
 # esp_driver_gpio was split out of the monolithic 'driver' component in IDF
-# v5.2. On v5.0/v5.1 the GPIO driver (driver/gpio.h) lives in 'driver'.
-if("${IDF_VERSION_MAJOR}.${IDF_VERSION_MINOR}" VERSION_GREATER_EQUAL "5.2")
+# v5.3. On v5.0/v5.1/v5.2 the GPIO driver (driver/gpio.h) lives in 'driver'.
+if("${IDF_VERSION_MAJOR}.${IDF_VERSION_MINOR}" VERSION_GREATER_EQUAL "5.3")
     set(m5hal_gpio_req esp_driver_gpio)
 else()
     set(m5hal_gpio_req driver)
