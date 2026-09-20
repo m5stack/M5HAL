@@ -1,0 +1,106 @@
+name: Build(native)
+
+on:
+  push:
+    tags-ignore:
+      - '*.*.*'
+      - 'v*.*.*'
+    branches:
+      - '*'
+    paths:
+      - 'src/**.cpp'
+      - 'src/**.hpp'
+      - 'src/**.h'
+      - 'src/**.c'
+      - 'src/**.inl'
+      - '.github/workflows/native-build-check.yml'
+  pull_request:
+    paths:
+      - 'src/**.cpp'
+      - 'src/**.hpp'
+      - 'src/**.h'
+      - 'src/**.c'
+      - 'src/**.inl'
+      - '.github/workflows/native-build-check.yml'
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: bash
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+
+jobs:
+  # M5UnitUnified includes <M5HAL.hpp> from its public header, so its host
+  # (native) build depends on M5HAL building for the host as well. Guard it
+  # here to keep the failure on the side that caused it.
+  native-build:
+    name: Native:Build (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 12
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - macos-latest
+          - windows-latest
+
+    steps:
+      - name: Checkout M5HAL
+        uses: actions/checkout@v4
+        with:
+          path: M5HAL
+
+      # M5HAL tracks the main branch of M5Utility (see idf_component.yml)
+      - name: Checkout M5Utility
+        uses: actions/checkout@v4
+        with:
+          repository: m5stack/M5Utility
+          ref: main
+          path: M5Utility
+
+      # M5HAL has no PlatformIO project, so the check is driven by a throwaway
+      # CMake project. On the host, platform_checker.hpp resolves to
+      # M5HAL_PLATFORM_NUMBER_UNKNOWN and the platform / Arduino implementations
+      # are excluded, so this verifies the headers and the generic bus code
+      # compile and link with the host toolchain (GCC / Clang / MSVC).
+      - name: Generate the check project
+        run: |
+          mkdir -p native_check
+          cat > native_check/main.cpp <<'EOF'
+          #include <M5HAL.hpp>
+
+          int main()
+          {
+              return 0;
+          }
+          EOF
+          cat > native_check/CMakeLists.txt <<'EOF'
+          cmake_minimum_required(VERSION 3.16)
+          project(m5hal_native_check CXX)
+
+          set(CMAKE_CXX_STANDARD 11)
+          set(CMAKE_CXX_STANDARD_REQUIRED ON)
+          set(CMAKE_CXX_EXTENSIONS OFF)
+
+          file(GLOB_RECURSE m5hal_sources "${M5HAL_DIR}/src/*.cpp")
+          file(GLOB_RECURSE m5utility_sources "${M5UTILITY_DIR}/src/*.cpp")
+
+          add_executable(m5hal_native_check main.cpp ${m5hal_sources} ${m5utility_sources})
+          target_include_directories(m5hal_native_check PRIVATE "${M5HAL_DIR}/src" "${M5UTILITY_DIR}/src")
+          EOF
+
+      - name: Configure
+        run: |
+          cmake -S native_check -B native_check/build \
+            -DM5HAL_DIR="${{ github.workspace }}/M5HAL" \
+            -DM5UTILITY_DIR="${{ github.workspace }}/M5Utility"
+
+      - name: Build
+        run: |
+          cmake --build native_check/build --config Release
