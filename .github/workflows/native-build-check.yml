@@ -93,6 +93,13 @@ jobs:
 
           add_executable(m5hal_native_check main.cpp ${m5hal_sources} ${m5utility_sources})
           target_include_directories(m5hal_native_check PRIVATE "${M5HAL_DIR}/src" "${M5UTILITY_DIR}/src")
+
+          # Without this MSVC reports __cplusplus as 199711L, so the C++ version
+          # checks in M5Utility (std::optional / std::expected and the like)
+          # would select a different configuration than the other compilers.
+          if(MSVC)
+            target_compile_options(m5hal_native_check PRIVATE /Zc:__cplusplus)
+          endif()
           EOF
 
       - name: Configure
