@@ -2,6 +2,10 @@
 #include "i2c.hpp"
 #include "../error.hpp"
 
+#if defined(_MSC_VER)
+#include <intrin.h>
+#endif
+
 namespace m5 {
 namespace hal {
 namespace bus {
@@ -13,7 +17,11 @@ constexpr uint32_t DELAY_CYCLE{200};
 void delayCycle(uint32_t count)
 {
     for (uint32_t i = count; i > 0; --i) {
+#if defined(_MSC_VER)
+        __nop();
+#else
         __asm__ __volatile__("nop");
+#endif
     }
 }
 
