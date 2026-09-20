@@ -17,11 +17,11 @@ m5::stl::expected<SPIBus*, m5::hal::error::error_t> getBus(const SPIBusConfig& c
 error::error_t SoftwareSPIBus::init(const BusConfig& config)
 {
     if (config.getBusType() != types::bus_type_t::SPI) {
-        M5_LIB_LOGE("SoftwareSPI::init: error %s", __PRETTY_FUNCTION__);
+        M5_LIB_LOGE("SoftwareSPI::init: error");
         return error::error_t::INVALID_ARGUMENT;
     }
     _config = static_cast<const SPIBusConfig&>(config);
-    M5_LIB_LOGV("SoftwareSPI::init: ok %s", __PRETTY_FUNCTION__);
+    M5_LIB_LOGV("SoftwareSPI::init: ok");
     if (_config.pin_clk) {
         _config.pin_clk->setMode(m5::hal::types::gpio_mode_t::Output);
     }
@@ -41,16 +41,16 @@ m5::stl::expected<Accessor*, m5::hal::error::error_t> SoftwareSPIBus::beginAcces
 {
     /// @TODO ここで排他制御＆ロック処理を行うこと。
     if (_Accessor.get() != nullptr) {
-        M5_LIB_LOGE("SoftwareSPI::beginAccess: error %s", __PRETTY_FUNCTION__);
+        M5_LIB_LOGE("SoftwareSPI::beginAccess: error");
         return nullptr;
     }
     if (access_config.getBusType() != getBusType()) {
-        M5_LIB_LOGE("SoftwareSPI::beginAccess: error %s", __PRETTY_FUNCTION__);
+        M5_LIB_LOGE("SoftwareSPI::beginAccess: error");
         return nullptr;
     }
     auto result = new SoftwareSPIMasterAccessor(*this, (const SPIMasterAccessConfig&)access_config);
     _Accessor.reset(result);
-    M5_LIB_LOGV("SoftwareSPI::beginAccess: ok %s", __PRETTY_FUNCTION__);
+    M5_LIB_LOGV("SoftwareSPI::beginAccess: ok");
     return result;
 }
 
