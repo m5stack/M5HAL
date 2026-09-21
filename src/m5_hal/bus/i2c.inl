@@ -2,6 +2,10 @@
 #include "i2c.hpp"
 #include "../error.hpp"
 
+#if defined(_MSC_VER)
+#include <intrin.h>
+#endif
+
 namespace m5 {
 namespace hal {
 namespace bus {
@@ -13,7 +17,11 @@ constexpr uint32_t DELAY_CYCLE{200};
 void delayCycle(uint32_t count)
 {
     for (uint32_t i = count; i > 0; --i) {
+#if defined(_MSC_VER)
+        __nop();
+#else
         __asm__ __volatile__("nop");
+#endif
     }
 }
 
@@ -28,15 +36,15 @@ m5::stl::expected<I2CBus*, m5::hal::error::error_t> getBus(const I2CBusConfig& c
 error::error_t SoftwareI2CBus::init(const BusConfig& config)
 {
     if (config.getBusType() != types::bus_type_t::I2C) {
-        M5_LIB_LOGE("SoftwareI2C::init: error %s", __PRETTY_FUNCTION__);
+        M5_LIB_LOGE("SoftwareI2C::init: error");
         return error::error_t::INVALID_ARGUMENT;
     }
     _config = static_cast<const I2CBusConfig&>(config);
     if (_config.pin_scl == nullptr || _config.pin_sda == nullptr) {
-        M5_LIB_LOGE("SoftwareI2C::init: error %s", __PRETTY_FUNCTION__);
+        M5_LIB_LOGE("SoftwareI2C::init: error");
         return error::error_t::INVALID_ARGUMENT;
     }
-    M5_LIB_LOGV("SoftwareI2C::init: ok %s", __PRETTY_FUNCTION__);
+    M5_LIB_LOGV("SoftwareI2C::init: ok");
 
     _config.pin_scl->setMode(m5::hal::types::gpio_mode_t::Output_OpenDrain);
     _config.pin_scl->writeLow();
@@ -54,16 +62,16 @@ m5::stl::expected<m5::hal::bus::Accessor*, m5::hal::error::error_t> SoftwareI2CB
 {
     /// @TODO ここで排他制御＆ロック処理を行うこと。
     if (_Accessor.get() != nullptr) {
-        M5_LIB_LOGE("SoftwareI2C::beginAccess: error %s", __PRETTY_FUNCTION__);
+        M5_LIB_LOGE("SoftwareI2C::beginAccess: error");
         return m5::stl::make_unexpected(m5::hal::error::error_t::INVALID_ARGUMENT);
     }
     if (access_config.getBusType() != getBusType()) {
-        M5_LIB_LOGE("SoftwareI2C::beginAccess: error %s", __PRETTY_FUNCTION__);
+        M5_LIB_LOGE("SoftwareI2C::beginAccess: error");
         return m5::stl::make_unexpected(m5::hal::error::error_t::INVALID_ARGUMENT);
     }
     auto result = new SoftwareI2CMasterAccessor(*this, (I2CMasterAccessConfig&)access_config);
     _Accessor.reset(result);
-    M5_LIB_LOGV("SoftwareI2C::beginAccess: ok %s", __PRETTY_FUNCTION__);
+    M5_LIB_LOGV("SoftwareI2C::beginAccess: ok");
     return result;
 }
 
