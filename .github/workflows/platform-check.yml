@@ -1,0 +1,119 @@
+name: Check(platform)
+
+on:
+  push:
+    tags-ignore:
+      - '*.*.*'
+      - 'v*.*.*'
+    branches:
+      - '*'
+    paths:
+      - 'src/m5_hal/platform_checker.hpp'
+      - 'src/m5_hal/platforms/**'
+      - '.github/workflows/platform-check.yml'
+  pull_request:
+    paths:
+      - 'src/m5_hal/platform_checker.hpp'
+      - 'src/m5_hal/platforms/**'
+      - '.github/workflows/platform-check.yml'
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: bash
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+
+jobs:
+  # platform_checker.hpp maps each SoC to a platform number and a directory, and
+  # M5HAL.hpp / M5HAL.cpp include <path>/header.hpp and <path>/impl.inl whenever
+  # the number is not M5HAL_PLATFORM_NUMBER_UNKNOWN. A SoC without a branch
+  # therefore resolves to the non-existent esp32_unknown directory and breaks the
+  # build on that chip only, which no other job here would notice.
+  #
+  # This runs the preprocessor alone, so it needs no cross toolchain. It is a
+  # stopgap: an ESP-IDF build check compiling the platform sources per target
+  # would cover this as well.
+  platform-resolve:
+    name: Check(platform):Resolve
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Resolve the platform path for every supported SoC
+        run: |
+          mkdir -p platform_check
+          cat > platform_check/probe.cpp <<'EOF'
+          #include "m5_hal/platform_checker.hpp"
+
+          #define M5HAL_PROBE_STR2(x)     #x
+          #define M5HAL_PROBE_STR(x)      M5HAL_PROBE_STR2(x)
+          #define M5HAL_PROBE_PATH(x, y)  M5HAL_PROBE_STR2(x/y)
+
+          const char* m5hal_probe_number = M5HAL_PROBE_STR(M5HAL_TARGET_PLATFORM_NUMBER);
+          const char* m5hal_probe_path   = M5HAL_PROBE_PATH(M5HAL_TARGET_PLATFORM_PATH, header.hpp);
+          EOF
+
+          # <idf target>:<CONFIG_IDF_TARGET_ macro suffix>, kept in sync with the
+          # targets listed in idf_component.yml
+          targets="
+          esp32:ESP32
+          esp32s2:ESP32S2
+          esp32s3:ESP32S3
+          esp32c3:ESP32C3
+          esp32c6:ESP32C6
+          esp32h2:ESP32H2
+          esp32p4:ESP32P4
+          esp32c5:ESP32C5
+          esp32c61:ESP32C61
+          "
+
+          status=0
+          numbers=""
+          for entry in ${targets}; do
+            target="${entry%%:*}"
+            macro="${entry##*:}"
+
+            expanded=$(g++ -std=c++11 -E -DESP_PLATFORM -DCONFIG_IDF_TARGET \
+              -DCONFIG_IDF_TARGET_"${macro}" -Isrc platform_check/probe.cpp)
+            number=$(printf '%s\n' "${expanded}" | sed -n 's/^const char\* m5hal_probe_number = "\(.*\)";$/\1/p')
+            path=$(printf '%s\n' "${expanded}" | sed -n 's/^const char\* m5hal_probe_path = "\(.*\)";$/\1/p')
+
+            if [ "${number}" = "0" ] || [ "${number}" = "310" ]; then
+              echo "::error::${target}: platform_checker.hpp has no branch for CONFIG_IDF_TARGET_${macro} (resolved to ${number})"
+              status=1
+              continue
+            fi
+
+            if [ ! -f "src/${path}" ]; then
+              echo "::error::${target}: platform number ${number} points at src/${path}, which does not exist"
+              status=1
+              continue
+            fi
+
+            impl="${path%header.hpp}impl.inl"
+            if [ ! -f "src/${impl}" ]; then
+              echo "::error::${target}: src/${impl} does not exist"
+              status=1
+              continue
+            fi
+
+            case " ${numbers} " in
+              *" ${number} "*)
+                echo "::error::${target}: platform number ${number} is already used by another SoC"
+                status=1
+                continue
+                ;;
+            esac
+            numbers="${numbers} ${number}"
+
+            echo "OK ${target}: ${number} -> src/${path}"
+          done
+
+          exit ${status}
